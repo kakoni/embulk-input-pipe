@@ -1,0 +1,85 @@
+plugins {
+    id "java"
+    id "maven-publish"  // Note that "uploadArchives" with the "maven" plugin is no longer supported.
+    id "jacoco"
+    id "checkstyle"
+    id "org.embulk.embulk-plugins" version "0.4.2"
+}
+group = "com.beans" +
+        ".pipe"
+version = "0.1.0-ALPHA"
+description = "An Embulk plugin to load piped data."
+
+repositories {
+    flatDir {
+        dirs 'lib'
+    }
+    mavenCentral()
+    jcenter()
+}
+
+def embulkVersion = '0.10.31'
+
+dependencies {
+    compileOnly "org.embulk:embulk-api:$embulkVersion"
+    compileOnly "org.embulk:embulk-spi:$embulkVersion"
+
+    compile('org.embulk:embulk-util-config:0.3.1') {
+        // Conflict with Embulk Core
+        exclude group: 'com.fasterxml.jackson.core', module: 'jackson-annotations'
+        exclude group: 'com.fasterxml.jackson.core', module: 'jackson-core'
+        exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
+        exclude group: 'com.fasterxml.jackson.datatype', module: 'jackson-datatype-jdk8'
+        exclude group: 'javax.validation', module: 'validation-api'
+    }
+
+    // embulk-input-gcs:0.3.2 and earlier have been working with containing jackson-core:2.9.6 (no other Jackson sublibrarires)
+    // while embulk-core has had jackson-core/annotations/databind 2.6.7. Safer to have the combat-tested version as of now.
+    //
+    // It (and other Jackson sublibraries) will be replaced with the latest Jackson after Embulk v0.10.32 and later get popular.
+    compile "com.fasterxml.jackson.core:jackson-core:2.9.6"
+
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.6.7'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.6.7'
+    compile 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.6.7'
+    compile 'javax.validation:validation-api:1.1.0.Final'
+
+    compile "org.embulk:embulk-util-file:0.1.3"
+    compile('org.embulk:embulk-util-retryhelper:0.8.1') {
+        exclude group: 'org.slf4j', module: 'slf4j-api'
+    }
+
+    compile("commons-codec:commons-codec:1.10") {
+        exclude group: "commons-logging", module: "commons-logging"
+    }
+    compile "javax.annotation:javax.annotation-api:1.2"
+
+    testCompile "junit:junit:4.12"
+    testCompile "org.embulk:embulk-core:$embulkVersion"
+    testCompile "org.embulk:embulk-core:$embulkVersion:tests"
+    testCompile "org.embulk:embulk-deps:$embulkVersion"
+    testCompile "org.embulk:embulk-junit4:$embulkVersion"
+    testCompile "org.mockito:mockito-core:2.18.3"
+    testCompile 'com.google.code.findbugs:annotations:3.0.0'
+    testCompile "org.embulk:embulk-formatter-csv:0.10.36"
+    testCompile "org.embulk:embulk-output-file:0.10.36"
+    testCompile "org.embulk:embulk-parser-csv:0.10.36"
+}
+
+embulkPlugin {
+    mainClass = "org.embulk.input.pipe.PipeInputPlugin"
+    category = "input"
+    type = "pipe"
+}
+
+gem {
+    authors = [
+        "kaki"
+    ]
+    email = [
+        "kakoni@gmail.com"
+    ]
+    summary = "azure file input plugin for Embulk"
+    homepage = "https://github.com/kaki/embulk-input-pipe"
+    licenses = [ "Apache-2.0" ]
+}
