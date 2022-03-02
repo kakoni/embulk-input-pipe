@@ -18,7 +18,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 group = "com.beans"
-version = "0.1.0-ALPHA"
+version = "0.1.0"
 description = "An Embulk plugin to load piped data."
 
 tasks.withType(JavaCompile) {
@@ -100,7 +100,11 @@ gem {
     email = [
         "kakoni@gmail.com"
     ]
-    summary = "azure file input plugin for Embulk"
+    summary = "Pipe input plugin for Embulk"
     homepage = "https://github.com/kakoni/embulk-input-pipe"
     licenses = [ "Apache-2.0" ]
+}
+
+gemPush {
+    host = "https://rubygems.org"
 }
