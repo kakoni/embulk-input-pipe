@@ -5,17 +5,30 @@ plugins {
     id "checkstyle"
     id "org.embulk.embulk-plugins" version "0.4.2"
 }
-group = "com.beans" +
-        ".pipe"
+configurations {
+    compileFlat
+    compile.extendsFrom compileFlat
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+group = "com.beans"
 version = "0.1.0-ALPHA"
 description = "An Embulk plugin to load piped data."
 
-repositories {
-    flatDir {
-        dirs 'lib'
-    }
-    mavenCentral()
-    jcenter()
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:deprecation" << "-Xlint:unchecked"
+    options.encoding = "UTF-8"
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 def embulkVersion = '0.10.31'
@@ -72,14 +85,22 @@ embulkPlugin {
     type = "pipe"
 }
 
+jar {
+    from rootProject.file("LICENSE")
+    from rootProject.file("NOTICE")
+    from {
+        configurations.compileFlat.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
 gem {
     authors = [
-        "kaki"
+        "Karri Niemelä"
     ]
     email = [
         "kakoni@gmail.com"
     ]
     summary = "azure file input plugin for Embulk"
-    homepage = "https://github.com/kaki/embulk-input-pipe"
+    homepage = "https://github.com/kakoni/embulk-input-pipe"
     licenses = [ "Apache-2.0" ]
 }

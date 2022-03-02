@@ -2,16 +2,13 @@ package org.embulk.input.pipe;
 
 import java.io.*;
 import java.util.List;
-import java.util.ArrayList;
 
 import org.embulk.config.*;
 import org.embulk.util.config.*;
 import org.embulk.util.file.InputStreamFileInput;
-import org.embulk.util.file.ResumableInputStream;
 import org.slf4j.Logger;
 
-import org.embulk.spi.BufferAllocator;
-import org.embulk.spi.Exec;
+    import org.embulk.spi.Exec;
 import org.embulk.spi.FileInputPlugin;
 import org.embulk.spi.TransactionalFileInput;
 import org.slf4j.LoggerFactory;
